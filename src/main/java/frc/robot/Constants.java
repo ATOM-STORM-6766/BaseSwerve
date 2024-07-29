@@ -198,4 +198,23 @@ public final class Constants {
                     Rotation2d.fromRotations(-0.662)); // TODO ROBOT SPECIFIC
         }
     }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR_ID = 20;
+        public static final int TRANSPORT_MOTOR_ID = 21;
+        public static final int SORTING_MOTOR_ID = 22;
+    }
+
+    public static final class ShooterConstants {
+        public static double RATIO = 1 / 7 * 18 / 30 * 10 / 86;
+        public static final int PITCH_MOTOR_ID = 23;
+        public static final int UP_FLYWHELL_ID = 24;
+        public static final int DOWN_FLYWHELL_ID = 25;
+    }
+
+    public static final class ElevatorConstants {
+        public static final int ELEVATOR_MOTOR_1_ID = 26;
+        public static final int ELEVATOR_MOTOR_2_ID = 27;
+        public static final int AMP_MOTOR_ID = 28;
+    }
 }

@@ -17,7 +17,7 @@ public class Controlboard{
 
     public static final double STICK_DEADBAND = 0.05;
 
-    private static final CommandXboxController driverController = new CommandXboxController(0);
+    public static final CommandXboxController driverController = new CommandXboxController(0);
 
     private static boolean fieldCentric = true;
 
