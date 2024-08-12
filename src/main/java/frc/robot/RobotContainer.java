@@ -2,6 +2,9 @@ package frc.robot;
 
 import java.util.Optional;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,23 +14,26 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.auto.Autonomous;
 import frc.robot.auto.Autonomous.PPEvent;
 import frc.robot.auto.Routines;
-import frc.robot.commands.DownElevator;
-import frc.robot.commands.UpElevator;
+import frc.robot.commands.DownPitch;
+import frc.robot.commands.UpPitch;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.controlboard.Controlboard;
 import frc.robot.shuffleboard.ShuffleboardTabManager;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
+
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 
 public class RobotContainer {
 
     /* Subsystems */
-    private static final Swerve m_swerve = new Swerve();
+    private static final Swerve m_swerve = Swerve.getInstance();
     private static final Intake m_intake = new Intake();
-    private static final Shooter m_shooter = new Shooter();
+    private static final Shooter m_shooter = Shooter.getInstance();
     private static final Elevator m_elevator = new Elevator();
+    private static final LED m_led = new LED();
 
     private static final ShuffleboardTabManager m_shuffleboardTabManager = new ShuffleboardTabManager();
 
@@ -49,34 +55,52 @@ public class RobotContainer {
      */
     private void configButtonBindings() {
         Controlboard.getZeroGyro().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
-        Controlboard.driverController.x().onTrue(new InstantCommand(() -> m_intake.setSpeed(new double[] { 0.3, 0 })))
-                .onFalse(new InstantCommand(() -> m_intake.stop()));
 
-        Controlboard.driverController.a().onTrue(
-                new InstantCommand(() -> m_intake.setSpeed(new double[] { 0, -0.4 })))
-                .onFalse(new InstantCommand(() -> m_intake.stop()));
+        Controlboard.intake()
+                .toggleOnTrue(Commands.startEnd(() -> {
+                    m_intake.setSpeed(0.4, 0.4, 0);
+                    // m_led.isIntake();
+                }, () -> m_intake.stop(), m_intake));
 
-        Controlboard.driverController.b()
-                .onTrue(new InstantCommand(() -> m_shooter.setSpeed(new double[] { 1, 1 })))
-                .onFalse(new InstantCommand(() -> m_shooter.stop()));
+        Controlboard.intakeFull()
+                .onTrue(Commands.runOnce(() -> {
+                    m_intake.stop();
+                    // m_led.intaked();
+                }, m_intake));
+        Controlboard.toShooter()
+                .whileTrue(Commands.startEnd(() -> m_intake.setSpeed(0.2, 0.5, -0.5), () -> m_intake.stop(),
+                        m_intake));
 
-        Controlboard.driverController.y().onTrue(new InstantCommand(() -> m_intake.setSpeed(new double[] { 0.3, 0.3 }))
-                .andThen(new InstantCommand(() -> m_elevator.setAmp(0.2)))).onFalse(
-                        new InstantCommand(() -> m_intake.stop()).andThen(new InstantCommand(() -> m_elevator.stop())));
+        Controlboard.toggleFlywheel()
+                .whileTrue(Commands.runEnd(
+                        () -> m_shooter.autoRun(m_swerve.getPose().getTranslation(), getAlliance() == Alliance.Red
+                                ? new Translation2d(16.57934 - 0.0381, 5.547868)// 红方低音炮底部，正对4号标签
+                                : new Translation2d(0.0, 5.547868), m_swerve), // 蓝方低音炮底部，正对7号标签
+                        () -> {
+                            m_shooter.stop();
+                            m_shooter.holdPitch();
+                            m_swerve.headTo(null, false);
+                        },
+                        m_shooter));
 
-        // //Controlboard.driverController.b().onTrue(new Shoot(m_shooter, m_intake));
-        // Controlboard.driverController.leftTrigger()
-        // .onTrue(new UpPitch(m_shooter,
-        // Controlboard.driverController.getLeftTriggerAxis()));
-        // Controlboard.driverController.rightTrigger()
-        // .onTrue(new DownPitch(m_shooter,
-        // Controlboard.driverController.getRightTriggerAxis()));
+        Controlboard.pitchUp().whileTrue(new UpPitch(m_shooter, Controlboard.getPitchUpSpeed()));
+        Controlboard.pitchDown().whileTrue(new DownPitch(m_shooter, Controlboard.getPitchDownSpeed()));
 
-        // Controlboard.driverController.leftBumper().onTrue(new InstantCommand(() ->
-        // m_elevator.up(0.3)))
-        // .onFalse(new InstantCommand(() -> m_elevator.stop()));
-        Controlboard.driverController.leftBumper().onTrue(new UpElevator(m_elevator));
-        Controlboard.driverController.rightBumper().onTrue(new DownElevator(m_elevator));
+        Controlboard.getElevatorAmp()
+                .onTrue(Commands.runEnd(() -> m_elevator.putAMP(m_intake), () -> {
+                    m_elevator.stopAMP();
+                    m_intake.stop();
+                }, m_elevator, m_intake).withTimeout(1.5));
+
+        Controlboard.setElevatorHigh().onTrue(Commands.runOnce(() -> m_elevator.toUpperLimit(), m_elevator))
+                .onFalse(Commands.runOnce(() -> m_elevator.toLowerLimit(), m_elevator));
+        Controlboard.setElevatorLow().whileTrue(Commands.startEnd(() -> {
+            m_elevator.setAmp(0.4);
+            m_intake.setSpeed(-0.4, -0.4, 0);
+        }, () -> {
+            m_elevator.stopAMP();
+            m_intake.stop();
+        }, m_elevator, m_intake));
     }
 
     private void configDefaultCommands() {

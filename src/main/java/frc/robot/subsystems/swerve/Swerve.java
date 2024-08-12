@@ -3,12 +3,13 @@ package frc.robot.subsystems.swerve;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -30,9 +31,20 @@ import frc.robot.Constants.SwerveConstants.ModuleConstants.ModuleLocation;
 public class Swerve extends SubsystemBase {
     private Pigeon2 m_pigeon2;
     private SwerveModule[] m_swerveModules;
-    private SwerveDriveOdometry m_odometry;
+    private SwerveDrivePoseEstimator m_odometry;
     private OdometryThread m_odometryThread;
     private ChassisSpeeds m_currentSpeeds = new ChassisSpeeds();
+    private static Swerve m_instance;
+
+    public boolean isAutoAim = false;
+    public Rotation2d autoAimAngle;
+
+    public static Swerve getInstance() {
+        if (m_instance == null) {
+            m_instance = new Swerve();
+        }
+        return m_instance;
+    }
 
     /**
      * Constructs a new instance of the Swerve class.
@@ -63,7 +75,8 @@ public class Swerve extends SubsystemBase {
          * module positions.
          * It uses these values to estimate the robot's position on the field.
          */
-        m_odometry = new SwerveDriveOdometry(SwerveConstants.KINEMATICS, getYaw(), getModulePositions(), new Pose2d());
+        m_odometry = new SwerveDrivePoseEstimator(SwerveConstants.KINEMATICS, getYaw(), getModulePositions(),
+                new Pose2d());
         m_odometryThread = new OdometryThread(m_odometry, m_swerveModules, m_pigeon2, m_swerveModules.length);
         m_odometryThread.start();
 
@@ -79,6 +92,11 @@ public class Swerve extends SubsystemBase {
                 SwerveConstants.PATH_FOLLOWER_CONFIG,
                 () -> RobotContainer.getAlliance() == Alliance.Blue ? false : true,
                 this);
+    }
+
+    @Override
+    public void periodic() {
+        // m_odometryThread.run();
     }
 
     /**
@@ -176,7 +194,7 @@ public class Swerve extends SubsystemBase {
      *
      * @param pose The new pose to set.
      */
-    public void resetPose(Pose2d pose) {
+    public synchronized void resetPose(Pose2d pose) {
         m_odometry.resetPosition(getYaw(), getModulePositions(), pose);
     }
 
@@ -186,7 +204,7 @@ public class Swerve extends SubsystemBase {
      * @return The current pose of the odometry.
      */
     public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
+        return m_odometry.getEstimatedPosition();
     }
 
     /**
@@ -275,5 +293,10 @@ public class Swerve extends SubsystemBase {
         for (SwerveModule mod : m_swerveModules) {
             mod.configDriveMotorPID(constants);
         }
+    }
+
+    public void headTo(Rotation2d lastAngle, boolean isAutoAim) {
+        autoAimAngle = lastAngle;
+        this.isAutoAim = isAutoAim;
     }
 }

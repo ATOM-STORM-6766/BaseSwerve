@@ -26,7 +26,6 @@ public class Robot extends TimedRobot {
   private RobotContainer robotContainer;
 
   private Timer coastTimer = new Timer();
-  
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -34,7 +33,8 @@ public class Robot extends TimedRobot {
    * initialization code.
    */
 
-  public Robot() {}
+  public Robot() {
+  }
 
   @Override
   public void robotInit() {
@@ -72,12 +72,13 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     coastTimer.reset();
     coastTimer.start();
+    CommandScheduler.getInstance().cancelAll();
   }
 
-    /** This function is called periodically when the robot is in Disabled mode. */
+  /** This function is called periodically when the robot is in Disabled mode. */
   @Override
   public void disabledPeriodic() {
-    if(((int)coastTimer.get()) == 5){
+    if (((int) coastTimer.get()) == 5) {
       RobotContainer.getSwerve().setNeutralModes(NeutralModeValue.Coast, NeutralModeValue.Coast);
     }
   }
@@ -101,7 +102,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
   }
 
-    /** This function is called once each time the robot enters Tele-Op mode. */
+  /** This function is called once each time the robot enters Tele-Op mode. */
   @Override
   public void teleopInit() {
     if (autonomousCommand != null) {

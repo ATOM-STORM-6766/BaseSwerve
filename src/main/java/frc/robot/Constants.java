@@ -1,14 +1,24 @@
 package frc.robot;
 
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import frc.lib.pid.ScreamPIDConstants;
 import frc.lib.util.COTSFalconSwerveConstants;
 
@@ -45,10 +55,8 @@ public final class Constants {
     public static final class SwerveConstants {
 
         /* Drivebase Constants */
-        public static final double TRACK_WIDTH = Units.inchesToMeters(19.75); // Distance from left wheels to right
-                                                                              // wheels
-        public static final double WHEEL_BASE = Units.inchesToMeters(22.65); // Distance from front wheels to back
-                                                                             // wheels
+        public static final double TRACK_WIDTH = 0.51685; // Distance from left wheels to right wheels
+        public static final double WHEEL_BASE = 0.51685; // Distance from front wheels to back wheels
 
         /* Gyro Constants */
         public static final boolean GYRO_INVERT = false; // Always ensure gyro reads CCW+ CW-
@@ -70,13 +78,11 @@ public final class Constants {
                 .SDSMK4i(COTSFalconSwerveConstants.driveGearRatios.L3);
 
         /* Swerve Heading Correction */
-        public static final ScreamPIDConstants HEADING_CONSTANTS = new ScreamPIDConstants(0.1, 0.0, 0.001);
+        public static final ScreamPIDConstants HEADING_CONSTANTS = new ScreamPIDConstants(0.07, 0.003, 0.0);
         public static final double CORRECTION_TIME_THRESHOLD = 0.2;
 
         /* PathPlanner Constants */
-        public static final ScreamPIDConstants PATH_TRANSLATION_CONSTANTS = new ScreamPIDConstants(25, 0.0, 0.0); // TODO
-                                                                                                                  // ROBOT
-                                                                                                                  // SPECIFIC
+        public static final ScreamPIDConstants PATH_TRANSLATION_CONSTANTS = new ScreamPIDConstants(20, 0.0, 0.0); 
         public static final ScreamPIDConstants PATH_ROTATION_CONSTANTS = new ScreamPIDConstants(45, 0.0, 0.0);
 
         public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
@@ -170,28 +176,28 @@ public final class Constants {
             }
 
             /* Front Left */
-            public static final SwerveModuleConstants MODULE_0 = new SwerveModuleConstants(
+            public static final SwerveModuleConstants MODULE_3 = new SwerveModuleConstants(
                     2,
                     3,
                     11,
                     Rotation2d.fromRotations(-0.359)); // TODO ROBOT SPECIFIC
 
             /* Front Right */
-            public static final SwerveModuleConstants MODULE_1 = new SwerveModuleConstants(
+            public static final SwerveModuleConstants MODULE_2 = new SwerveModuleConstants(
                     8,
                     9,
                     14,
                     Rotation2d.fromRotations(-0.735)); // TODO ROBOT SPECIFIC
 
             /* Back Left */
-            public static final SwerveModuleConstants MODULE_2 = new SwerveModuleConstants(
+            public static final SwerveModuleConstants MODULE_1 = new SwerveModuleConstants(
                     4,
                     5,
                     12,
                     Rotation2d.fromRotations(-0.187)); // TODO ROBOT SPECIFIC
 
             /* Back Right */
-            public static final SwerveModuleConstants MODULE_3 = new SwerveModuleConstants(
+            public static final SwerveModuleConstants MODULE_0 = new SwerveModuleConstants(
                     6,
                     7,
                     13,
@@ -206,15 +212,144 @@ public final class Constants {
     }
 
     public static final class ShooterConstants {
-        public static double RATIO = 1 / 7 * 18 / 30 * 10 / 86;
+        public static double RATIO = 7.0 / 1 * 30 / 18 * 86 / 10;
         public static final int PITCH_MOTOR_ID = 23;
         public static final int UP_FLYWHELL_ID = 24;
         public static final int DOWN_FLYWHELL_ID = 25;
+
+        public static InterpolatingDoubleTreeMap upperMap = new InterpolatingDoubleTreeMap();
+        public static InterpolatingDoubleTreeMap lowerMap = new InterpolatingDoubleTreeMap();
+        public static InterpolatingDoubleTreeMap angleMap = new InterpolatingDoubleTreeMap();
+
+        static {
+            upperMap.put(1.325, 0.6);
+            lowerMap.put(1.325, 0.6);
+            angleMap.put(1.325, 47.5);
+
+            upperMap.put(1.425, 0.6);
+            lowerMap.put(1.425, 0.6);
+            angleMap.put(1.425, 47.0);
+
+            upperMap.put(1.525, 0.6);
+            lowerMap.put(1.525, 0.6);
+            angleMap.put(1.525, 46.5);
+
+            upperMap.put(1.625, 0.6);
+            lowerMap.put(1.625, 0.6);
+            angleMap.put(1.625, 46.0);
+
+            upperMap.put(1.725, 0.6);
+            lowerMap.put(1.725, 0.6);
+            angleMap.put(1.725, 45.5);
+
+            upperMap.put(1.825, 0.6);
+            lowerMap.put(1.825, 0.6);
+            angleMap.put(1.825, 45.0);
+
+            upperMap.put(1.925, 0.6);
+            lowerMap.put(1.925, 0.6);
+            angleMap.put(1.925, 40.0);
+
+            upperMap.put(2.025, 0.6);
+            lowerMap.put(2.025, 0.6);
+            angleMap.put(2.025, 39.0);
+
+            upperMap.put(2.125, 0.6);
+            lowerMap.put(2.125, 0.6);
+            angleMap.put(2.125, 37.0);
+
+            upperMap.put(2.225, 0.6);
+            lowerMap.put(2.225, 0.6);
+            angleMap.put(2.225, 35.5);
+
+            upperMap.put(2.325, 0.6);
+            lowerMap.put(2.325, 0.6);
+            angleMap.put(2.325, 34.0);
+
+            upperMap.put(2.425, 0.6);
+            lowerMap.put(2.425, 0.6);
+            angleMap.put(2.425, 33.0);
+
+            upperMap.put(2.525, 0.6);
+            lowerMap.put(2.525, 0.6);
+            angleMap.put(2.525, 32.0);
+
+            upperMap.put(2.625, 0.6);
+            lowerMap.put(2.625, 0.6);
+            angleMap.put(2.625, 31.0);
+
+            upperMap.put(2.725, 0.6);
+            lowerMap.put(2.725, 0.6);
+            angleMap.put(2.725, 30.5);
+
+            upperMap.put(2.825, 0.6);
+            lowerMap.put(2.825, 0.6);
+            angleMap.put(2.825, 30.0);
+
+            upperMap.put(2.925, 0.6);
+            lowerMap.put(2.925, 0.6);
+            angleMap.put(2.925, 29.5);
+
+            upperMap.put(3.025, 0.6);
+            lowerMap.put(3.025, 0.6);
+            angleMap.put(3.025, 29.0);
+
+            upperMap.put(3.125, 0.6);
+            lowerMap.put(3.125, 0.6);
+            angleMap.put(3.125, 28.5);
+
+            upperMap.put(3.225, 0.6);
+            lowerMap.put(3.225, 0.6);
+            angleMap.put(3.225, 28.0);
+
+            upperMap.put(3.325, 0.6);
+            lowerMap.put(3.325, 0.6);
+            angleMap.put(3.325, 27.2);
+
+            upperMap.put(3.425, 0.6);
+            lowerMap.put(3.425, 0.6);
+            angleMap.put(3.425, 26.8);
+
+            upperMap.put(3.525, 0.64);
+            lowerMap.put(3.525, 0.64);
+            angleMap.put(3.525, 25.2);
+
+            upperMap.put(3.625, 0.64);
+            lowerMap.put(3.625, 0.68);
+            angleMap.put(3.625, 25.3);
+
+            upperMap.put(3.725, 0.65);
+            lowerMap.put(3.725, 0.7);
+            angleMap.put(3.725, 25.3);
+
+            upperMap.put(3.825, 0.65);
+            lowerMap.put(3.825, 0.7);
+            angleMap.put(3.825, 25.3);
+        }
+
     }
 
     public static final class ElevatorConstants {
         public static final int ELEVATOR_MOTOR_1_ID = 26;
         public static final int ELEVATOR_MOTOR_2_ID = 27;
         public static final int AMP_MOTOR_ID = 28;
+    }
+
+    public static class Vision {
+        public static final String kCameraName = "Arducam_OV9281_Right_Front";
+        // Cam mounted facing forward, half a meter forward of center, half a meter up
+        // from center.
+        public static final Transform3d kRobotToCam = new Transform3d(new Translation3d(0.155312, 0, 0.607577),
+                new Rotation3d(0, -0.401426, 3.106686));
+
+        // The layout of the AprilTags on the field
+        public static final AprilTagFieldLayout kTagLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+        // The standard deviations of our vision estimated poses, which affect
+        // correction rate
+        // (Fake values. Experiment and determine estimation noise on an actual robot.)
+
+        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
+        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
     }
 }

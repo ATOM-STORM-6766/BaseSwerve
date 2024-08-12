@@ -16,14 +16,14 @@ public class PutAMP extends Command {
 
     @Override
     public void execute() {
-        m_intake.setSpeed(new double[] { 0.3, 0.3 });
+        m_intake.setSpeed(0, 0.3, 0.3);
         m_elevator.setAmp(0.3);
     }
 
     @Override
     public void end(boolean interrupted) {
         m_intake.stop();
-        m_elevator.stop();
+        m_elevator.stopAMP();
     }
 
     @Override

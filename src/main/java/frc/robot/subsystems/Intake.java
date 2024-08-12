@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -15,25 +14,36 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.SwerveConstants.DriveConstants;
 
 public class Intake extends SubsystemBase {
-    TalonFX m_intakeMotor;
-    TalonFX m_transportMotor;
-    TalonFX m_sortingMotor;
+    private TalonFX m_intakeMotor;
+    private TalonFX m_transportMotor;
+    private TalonFX m_sortingMotor;
+
+    public enum SortingState {
+        TOAMP(0.3), TOSHOOTER(-0.5), TOSHOOTER_AMP(-0.4);
+
+        double speed;
+
+        SortingState(double speed) {
+            this.speed = speed;
+        }
+    }
 
     public Intake() {
         m_intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);
         m_transportMotor = new TalonFX(IntakeConstants.TRANSPORT_MOTOR_ID);
         m_sortingMotor = new TalonFX(IntakeConstants.SORTING_MOTOR_ID);
         configMotors();
-        m_transportMotor.setControl(new Follower(m_intakeMotor.getDeviceID(), true));
     }
 
-    public void setSpeed(double[] speed) {
-        m_intakeMotor.setControl(new VoltageOut(speed[0] * 12).withEnableFOC(true));
-        m_sortingMotor.setControl(new VoltageOut(speed[1] * 12).withEnableFOC(true));
+    public void setSpeed(double intakeSpeed, double transportSpeed, double sortingSpeed) {
+            m_intakeMotor.setControl(new VoltageOut(intakeSpeed * 12).withEnableFOC(true));
+            m_transportMotor.setControl(new VoltageOut(transportSpeed * 12).withEnableFOC(true));
+            m_sortingMotor.setControl(new VoltageOut(sortingSpeed * 12).withEnableFOC(true));
     }
 
     public void stop() {
         m_intakeMotor.setControl(new NeutralOut());
+        m_transportMotor.setControl(new NeutralOut());
         m_sortingMotor.setControl(new NeutralOut());
     }
 

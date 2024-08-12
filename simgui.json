@@ -5,10 +5,17 @@
       "/Shuffleboard/Auto/Selected Auto": "String Chooser",
       "/Shuffleboard/Match/Auto Chooser": "String Chooser",
       "/Shuffleboard/Swerve/Odometry Angle": "Gyro",
-      "/SmartDashboard/Auto Chooser": "String Chooser"
+      "/SmartDashboard/Auto Chooser": "String Chooser",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     }
   },
   "NetworkTables Info": {
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "open": true
+    },
     "visible": true
   },
   "Plot": {

@@ -16,8 +16,8 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
-        m_intake.setSpeed(new double[] { 0.3, -0.4 });
-        m_shooter.setSpeed(new double[] { 0.7, 0.7 });
+        m_intake.setSpeed(0, 0.3, -0.4);
+        m_shooter.setSpeed(0.7, 0.7);
     }
 
     @Override

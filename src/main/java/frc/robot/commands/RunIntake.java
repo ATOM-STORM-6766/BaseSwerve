@@ -14,7 +14,7 @@ public class RunIntake extends Command {
 
     @Override
     public void execute() {
-        m_Intake.setSpeed(new double[] { 0.3, 0 });
+        m_Intake.setSpeed(0, 0.3, 0);
     }
 
     @Override

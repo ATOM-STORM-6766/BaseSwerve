@@ -16,8 +16,8 @@ public class ShootAMP extends Command {
 
     @Override
     public void execute() {
-        m_intake.setSpeed(new double[] { 0.3, 0.3 });
-        m_shooter.setSpeed(new double[] { 0.11, 0.23 });
+        m_intake.setSpeed(0, 0.3, 0.3);
+        m_shooter.setSpeed(0.11, 0.23);
     }
 
     @Override

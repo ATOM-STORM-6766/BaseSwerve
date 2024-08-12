@@ -52,6 +52,8 @@ public class SwerveModule {
     private SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV,
             DriveConstants.KA);
 
+    private VoltageOut m_voltageOut = new VoltageOut(0).withEnableFOC(true);
+
     /**
      * Constructs a SwerveModule object with the given location and module
      * constants.
@@ -156,8 +158,9 @@ public class SwerveModule {
      */
     public void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
-            m_driveMotor.setControl(new VoltageOut((desiredState.speedMetersPerSecond / SwerveConstants.MAX_SPEED) * 12)
-                    .withEnableFOC(true));
+            m_driveMotor
+                    .setControl(m_voltageOut
+                            .withOutput((desiredState.speedMetersPerSecond / SwerveConstants.MAX_SPEED) * 12));
         } else {
             double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
                     SwerveConstants.MODULE_TYPE.wheelCircumference, 1);
