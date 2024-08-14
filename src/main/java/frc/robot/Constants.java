@@ -1,6 +1,5 @@
 package frc.robot;
 
-
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
@@ -19,6 +18,7 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import frc.lib.pid.ScreamPIDConstants;
 import frc.lib.util.COTSFalconSwerveConstants;
 
@@ -82,7 +82,7 @@ public final class Constants {
         public static final double CORRECTION_TIME_THRESHOLD = 0.2;
 
         /* PathPlanner Constants */
-        public static final ScreamPIDConstants PATH_TRANSLATION_CONSTANTS = new ScreamPIDConstants(20, 0.0, 0.0); 
+        public static final ScreamPIDConstants PATH_TRANSLATION_CONSTANTS = new ScreamPIDConstants(20, 0.0, 0.0);
         public static final ScreamPIDConstants PATH_ROTATION_CONSTANTS = new ScreamPIDConstants(45, 0.0, 0.0);
 
         public static final HolonomicPathFollowerConfig PATH_FOLLOWER_CONFIG = new HolonomicPathFollowerConfig(
@@ -135,8 +135,7 @@ public final class Constants {
             public static final InvertedValue MOTOR_INVERT = MODULE_TYPE.steerMotorInvert;
 
             /* Neutral Modes */
-            public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake; // TODO CHANGE TO BRAKE AFTER
-                                                                                        // MEASURING OFFSETS
+            public static final NeutralModeValue NEUTRAL_MODE = NeutralModeValue.Brake;
 
             /* Current Limits */
             public static final int SUPPLY_CURRENT_LIMIT = 25;
@@ -180,28 +179,28 @@ public final class Constants {
                     2,
                     3,
                     11,
-                    Rotation2d.fromRotations(-0.359)); // TODO ROBOT SPECIFIC
+                    Rotation2d.fromRotations(-0.359)); // ROBOT SPECIFIC
 
             /* Front Right */
             public static final SwerveModuleConstants MODULE_2 = new SwerveModuleConstants(
                     8,
                     9,
                     14,
-                    Rotation2d.fromRotations(-0.735)); // TODO ROBOT SPECIFIC
+                    Rotation2d.fromRotations(-0.735)); // ROBOT SPECIFIC
 
             /* Back Left */
             public static final SwerveModuleConstants MODULE_1 = new SwerveModuleConstants(
                     4,
                     5,
                     12,
-                    Rotation2d.fromRotations(-0.187)); // TODO ROBOT SPECIFIC
+                    Rotation2d.fromRotations(-0.187)); // ROBOT SPECIFIC
 
             /* Back Right */
             public static final SwerveModuleConstants MODULE_0 = new SwerveModuleConstants(
                     6,
                     7,
                     13,
-                    Rotation2d.fromRotations(-0.662)); // TODO ROBOT SPECIFIC
+                    Rotation2d.fromRotations(-0.662)); // ROBOT SPECIFIC
         }
     }
 
@@ -216,6 +215,11 @@ public final class Constants {
         public static final int PITCH_MOTOR_ID = 23;
         public static final int UP_FLYWHELL_ID = 24;
         public static final int DOWN_FLYWHELL_ID = 25;
+
+        public static final double flywheelCircumference = Units.inchesToMeters(3) * Math.PI;
+
+        public static final Translation2d redTargetPosition = new Translation2d(16.54175, 5.547868);// 红方低音炮底部，正对4号标签
+        public static final Translation2d blueTargetPosition = new Translation2d(0.0, 5.547868);// 蓝方低音炮底部，正对7号标签
 
         public static InterpolatingDoubleTreeMap upperMap = new InterpolatingDoubleTreeMap();
         public static InterpolatingDoubleTreeMap lowerMap = new InterpolatingDoubleTreeMap();

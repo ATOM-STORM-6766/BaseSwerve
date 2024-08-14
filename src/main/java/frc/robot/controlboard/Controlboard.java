@@ -2,7 +2,6 @@ package frc.robot.controlboard;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,6 +19,7 @@ public class Controlboard {
     public static final double STICK_DEADBAND = 0.05;
 
     public static final CommandXboxController driverController = new CommandXboxController(0);
+    public static final CommandXboxController operatorController = new CommandXboxController(1);
 
     private static DigitalInput intakelimitSwitch = new DigitalInput(0);
 
@@ -44,7 +44,7 @@ public class Controlboard {
      * @return A DoubleSupplier representing the rotation.
      */
     public static DoubleSupplier getRotation() {
-        return () -> -MathUtil.applyDeadband(driverController.getRightX(), STICK_DEADBAND);
+        return () -> -MathUtil.applyDeadband(Math.pow(driverController.getRightX(), 3), STICK_DEADBAND);
     }
 
     /**
@@ -79,43 +79,31 @@ public class Controlboard {
         return driverController.x();
     }
 
-    public static Trigger toggleFlywheel() {
-        return driverController.b();
+    public static Trigger outtake() {
+        return driverController.y();
     }
 
-    public static Trigger getElevatorAmp() {
-        return driverController.y();
+    public static Trigger toggleFlywheel() {
+        return driverController.b();
     }
 
     public static Trigger toShooter() {
         return driverController.a();
     }
 
+    public static Trigger toElevatorAmp() {
+        return operatorController.y();
+    }
+
+    public static Trigger resetElevator() {
+        return operatorController.x();
+    }
+
     public static Trigger setElevatorHigh() {
-        return driverController.leftBumper();
+        return operatorController.leftBumper();
     }
 
-    public static Trigger setElevatorLow() {
-        return driverController.rightBumper();
-    }
-
-    public static Trigger pitchUp() {
-        return driverController.leftTrigger(0.1);
-    }
-
-    public static Trigger pitchDown() {
-        return driverController.rightTrigger(0.1);
-    }
-
-    public static Trigger intakeFull() {
-        return new Trigger(() -> !intakelimitSwitch.get()).debounce(0.01);
-    }
-
-    public static Supplier<Double> getPitchUpSpeed() {
-        return driverController::getLeftTriggerAxis;
-    }
-
-    public static Supplier<Double> getPitchDownSpeed() {
-        return driverController::getRightTriggerAxis;
+    public static BooleanSupplier intakeFull() {
+        return () -> !intakelimitSwitch.get();
     }
 }

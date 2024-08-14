@@ -3,6 +3,7 @@ package frc.robot.commands.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
@@ -99,8 +100,8 @@ public class TeleopSwerve extends Command {
         }
 
         if (correctionTimer.hasElapsed(SwerveConstants.CORRECTION_TIME_THRESHOLD)) {
-            return swerve.calculateHeadingCorrection(swerve.getYaw().getDegrees(),
-                    lastAngle.getDegrees());
+            return swerve.calculateHeadingCorrection(MathUtil.inputModulus(swerve.getYaw().getDegrees(), -180, 180),
+                    MathUtil.inputModulus(lastAngle.getDegrees(), -180, 180));
         }
 
         return current * SwerveConstants.MAX_ANGULAR_VELOCITY;

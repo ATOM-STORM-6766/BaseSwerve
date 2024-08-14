@@ -64,22 +64,22 @@ public class Elevator extends SubsystemBase {
         if (state == ElevatorState.DOWN_EMPTY) {
             timer.start();
             if (timer.get() < 0.3) {
-                m_intake.setSpeed(0, 0.4, 0.4);
+                m_intake.setSpeed(0, 0.35, 0.35);
             } else if (timer.get() < 0.6) {
-                m_intake.setSpeed(0.3, 0.4, 0.4);
+                m_intake.setSpeed(0.3, 0.35, 0.35);
             } else if (timer.get() < 0.7) {
-                m_intake.setSpeed(0, -0.3, 0.4);
+                m_intake.setSpeed(0, -0.3, 0.35);
             } else {
-                m_intake.setSpeed(0, 0.4, 0.4);
+                m_intake.setSpeed(0, 0.35, 0.35);
             }
-            setAmp(0.4);
+            setAmp(0.35);
         }
         if (state == ElevatorState.DOWN_FULL) {
             m_intake.stop();
             stopAMP();
         }
         if (state == ElevatorState.UP_FULL) {
-            setAmp(0.4);
+            setAmp(0.35);
         }
         if (state == ElevatorState.UP_EMPTY) {
             stopAMP();

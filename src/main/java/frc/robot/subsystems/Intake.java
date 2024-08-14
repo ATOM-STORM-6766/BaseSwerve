@@ -18,15 +18,6 @@ public class Intake extends SubsystemBase {
     private TalonFX m_transportMotor;
     private TalonFX m_sortingMotor;
 
-    public enum SortingState {
-        TOAMP(0.3), TOSHOOTER(-0.5), TOSHOOTER_AMP(-0.4);
-
-        double speed;
-
-        SortingState(double speed) {
-            this.speed = speed;
-        }
-    }
 
     public Intake() {
         m_intakeMotor = new TalonFX(IntakeConstants.INTAKE_MOTOR_ID);

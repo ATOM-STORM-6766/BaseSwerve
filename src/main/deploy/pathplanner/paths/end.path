@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.38,
-        "y": 5.5
+        "x": 2.242315279411105,
+        "y": 6.5732800504746915
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.38,
-        "y": 5.5
+        "x": 3.242315279411105,
+        "y": 6.5732800504746915
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "shoot1"
     },
     {
       "anchor": {
-        "x": 3.38,
-        "y": 5.5
+        "x": 6.770574869738114,
+        "y": 7.420502812535874
       },
       "prevControl": {
-        "x": 3.3686868127061786,
-        "y": 5.5
+        "x": 5.770574869738114,
+        "y": 7.420502812535874
       },
       "nextControl": null,
       "isLocked": false,
@@ -44,6 +44,9 @@
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
   "useDefaultConstraints": true
 }

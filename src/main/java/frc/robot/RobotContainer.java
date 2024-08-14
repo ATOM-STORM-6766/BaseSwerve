@@ -2,7 +2,6 @@ package frc.robot;
 
 import java.util.Optional;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,8 +11,10 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.auto.Autonomous;
 import frc.robot.auto.Autonomous.PPEvent;
 import frc.robot.auto.Routines;
-import frc.robot.commands.DownPitch;
-import frc.robot.commands.UpPitch;
+import frc.robot.commands.AutoShoot;
+import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ToAMP;
+import frc.robot.commands.ToShooter;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.controlboard.Controlboard;
 import frc.robot.shuffleboard.ShuffleboardTabManager;
@@ -54,51 +55,24 @@ public class RobotContainer {
     private void configButtonBindings() {
         Controlboard.getZeroGyro().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-        Controlboard.intake()
-                .toggleOnTrue(Commands.startEnd(() -> {
-                    m_intake.setSpeed(0.4, 0.4, 0);
-                    // m_led.isIntake();
-                }, () -> m_intake.stop(), m_intake));
+        Controlboard.intake().toggleOnTrue(new IntakeNote(m_intake).until(Controlboard.intakeFull()));
 
-        Controlboard.intakeFull()
-                .onTrue(Commands.runOnce(() -> {
-                    m_intake.stop();
-                    // m_led.intaked();
-                }, m_intake));
-        Controlboard.toShooter()
-                .whileTrue(Commands.startEnd(() -> m_intake.setSpeed(0.2, 0.5, -0.5), () -> m_intake.stop(),
-                        m_intake));
+        Controlboard.toShooter().whileTrue(new ToShooter(m_intake));
 
-        Controlboard.toggleFlywheel()
-                .whileTrue(Commands.runEnd(
-                        () -> m_shooter.autoRun(m_swerve.getPose().getTranslation(), getAlliance() == Alliance.Red
-                                ? new Translation2d(16.57934 - 0.0381, 5.547868)// 红方低音炮底部，正对4号标签
-                                : new Translation2d(0.0, 5.547868), m_swerve), // 蓝方低音炮底部，正对7号标签
-                        () -> {
-                            m_shooter.stop();
-                            m_shooter.holdPitch();
-                            m_swerve.headTo(null, false);
-                        },
-                        m_shooter));
+        Controlboard.toggleFlywheel().whileTrue(new AutoShoot(m_shooter));
 
-        Controlboard.pitchUp().whileTrue(new UpPitch(m_shooter, Controlboard.getPitchUpSpeed()));
-        Controlboard.pitchDown().whileTrue(new DownPitch(m_shooter, Controlboard.getPitchDownSpeed()));
-
-        Controlboard.getElevatorAmp()
-                .onTrue(Commands.runEnd(() -> m_elevator.putAMP(m_intake), () -> {
-                    m_elevator.stopAMP();
-                    m_intake.stop();
-                }, m_elevator, m_intake).withTimeout(1.5));
+        Controlboard.toElevatorAmp().onTrue(new ToAMP(m_intake, m_elevator));
 
         Controlboard.setElevatorHigh().onTrue(Commands.runOnce(() -> m_elevator.toUpperLimit(), m_elevator))
                 .onFalse(Commands.runOnce(() -> m_elevator.toLowerLimit(), m_elevator));
-        Controlboard.setElevatorLow().whileTrue(Commands.startEnd(() -> {
-            m_elevator.setAmp(0.4);
+
+        Controlboard.outtake().whileTrue(Commands.startEnd(() -> {
             m_intake.setSpeed(-0.4, -0.4, 0);
         }, () -> {
-            m_elevator.stopAMP();
             m_intake.stop();
-        }, m_elevator, m_intake));
+        }, m_intake));
+
+        Controlboard.resetElevator().onTrue(Commands.runOnce(() -> m_elevator.resetState(), m_elevator));
     }
 
     private void configDefaultCommands() {
@@ -123,7 +97,11 @@ public class RobotContainer {
     private void configAuto() {
         Autonomous.configure(
                 Commands.none().withName("Do Nothing"),
-                new PPEvent("ExampleEvent", new PrintCommand("This is an example event :)")));
+                new PPEvent("ExampleEvent", new PrintCommand("This is an example event :)")),
+                new PPEvent("intake", new IntakeNote(m_intake).until(Controlboard.intakeFull())),
+                new PPEvent("aim", new ToShooter(m_intake)),
+                new PPEvent("shoot", new AutoShoot(m_shooter))
+                );
 
         Autonomous.addRoutines(
                 Routines.exampleAuto().withName("Example Auto"));

@@ -26,7 +26,6 @@ public class Shooter extends SubsystemBase {
     private TalonFX m_upFlyWhell;
     private TalonFX m_downFlyWhell;
     private TalonFX m_pitchMotor;
-    private boolean isRun = false;
 
     public static double upSpeed = 0;
     public static double downSpeed = 0;
@@ -48,7 +47,7 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         if (!isReady && DriverStation.isEnabled()) {
-            down(0.2);
+            down(0.5);
             m_timer.start();
             System.out.println(m_timer.get());
             if (corr_pith > m_pitchMotor.getPosition().getValue() && m_timer.get() > 0.4) {
@@ -78,16 +77,29 @@ public class Shooter extends SubsystemBase {
         setSpeed(upSpeed, downSpeed);
     }
 
-    public void autoRun(Translation2d my, Translation2d to, Swerve swerve) {
-        double length = my.getDistance(to);
-        double angle = Math.atan2(my.getY() - to.getY(), my.getX() - to.getX());
+    public void autoRun(Translation2d robotPosition, Boolean isRed, Swerve swerve) {
+        Translation2d targetPosition = isRed ? ShooterConstants.redTargetPosition : ShooterConstants.blueTargetPosition;
+        double length = robotPosition.getDistance(targetPosition);
+        if (length > 3.6) {
+            stop();
+            holdPitch();
+            swerve.headTo(new Rotation2d(0), false);
+            return;
+        }
         double upspeed = ShooterConstants.upperMap.get(length);
         double downspeed = ShooterConstants.lowerMap.get(length);
         double pitch = ShooterConstants.angleMap.get(length);
-        System.out.println(my);
+        //double time = length / ((upspeed + downspeed) / 2 * ShooterConstants.flywheelCircumference);
+        Rotation2d angle = new Rotation2d(robotPosition.getX() - targetPosition.getX(),
+                robotPosition.getY() - targetPosition.getY());
+                        //+ time * swerve.getRobotRelativeSpeeds().vyMetersPerSecond);
+        if (isRed) {
+            angle = angle.plus(Rotation2d.fromDegrees(180));
+        }
+        System.out.println("length: " + length + " angle: " + angle);
         setSpeed(upspeed, downspeed);
         setPitch(pitch);
-        swerve.headTo(new Rotation2d(angle), true);
+        swerve.headTo(angle, true);
     }
 
     public void setSpeed(double upSpeed, double downSpeed) {
@@ -155,6 +167,7 @@ public class Shooter extends SubsystemBase {
         TalonFXConfiguration config = new TalonFXConfiguration();
         config.Audio.BeepOnBoot = false;
         config.Audio.BeepOnConfig = false;
+        config.CurrentLimits = DeviceConfig.FXCurrentLimitsConfig(true, 30, 30, 0);
         config.MotorOutput = DeviceConfig.FXMotorOutputConfig(invert, neutralMode);
         config.OpenLoopRamps = DeviceConfig.FXOpenLoopRampConfig(0.1);
         config.ClosedLoopRamps = DeviceConfig.FXClosedLoopRampConfig(1);

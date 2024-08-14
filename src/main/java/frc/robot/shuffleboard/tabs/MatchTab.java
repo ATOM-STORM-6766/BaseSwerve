@@ -4,7 +4,6 @@ package frc.robot.shuffleboard.tabs;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
@@ -18,7 +17,6 @@ public class MatchTab extends ShuffleboardTabBase {
     private static SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
     @SuppressWarnings("unused")
     private ComplexWidget m_autoChooserEntry;
-    private Shooter m_shooter = Shooter.getInstance();
 
     private GenericEntry m_upFlywhell;
     private GenericEntry m_downFlywheel;
@@ -38,7 +36,7 @@ public class MatchTab extends ShuffleboardTabBase {
     public void periodic() {
         Shooter.upSpeed = m_upFlywhell.getDouble(0);
         Shooter.downSpeed = m_downFlywheel.getDouble(0);
-        Shooter.m_pitch=m_pitch.getDouble(0);
+        Shooter.m_pitch = m_pitch.getDouble(0);
     }
 
     public static SendableChooser<Command> getAutoChooser() {
