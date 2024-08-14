@@ -99,8 +99,8 @@ public class RobotContainer {
                 Commands.none().withName("Do Nothing"),
                 new PPEvent("ExampleEvent", new PrintCommand("This is an example event :)")),
                 new PPEvent("intake", new IntakeNote(m_intake).until(Controlboard.intakeFull())),
-                new PPEvent("aim", new ToShooter(m_intake)),
-                new PPEvent("shoot", new AutoShoot(m_shooter))
+                new PPEvent("aim", new AutoShoot(m_shooter)),
+                new PPEvent("shoot", new ToShooter(m_intake))
                 );
 
         Autonomous.addRoutines(
