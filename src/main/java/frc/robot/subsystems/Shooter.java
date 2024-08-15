@@ -11,14 +11,12 @@ import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.config.DeviceConfig;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.subsystems.swerve.Swerve;
 
 public class Shooter extends SubsystemBase {
     private static Shooter instance = null;
@@ -77,29 +75,13 @@ public class Shooter extends SubsystemBase {
         setSpeed(upSpeed, downSpeed);
     }
 
-    public void autoRun(Translation2d robotPosition, Boolean isRed, Swerve swerve) {
-        Translation2d targetPosition = isRed ? ShooterConstants.redTargetPosition : ShooterConstants.blueTargetPosition;
-        double length = robotPosition.getDistance(targetPosition);
-        if (length > 3.6) {
-            stop();
-            holdPitch();
-            swerve.headTo(new Rotation2d(0), false);
-            return;
-        }
+    public void autoRun(double length) {
         double upspeed = ShooterConstants.upperMap.get(length);
         double downspeed = ShooterConstants.lowerMap.get(length);
         double pitch = ShooterConstants.angleMap.get(length);
         //double time = length / ((upspeed + downspeed) / 2 * ShooterConstants.flywheelCircumference);
-        Rotation2d angle = new Rotation2d(robotPosition.getX() - targetPosition.getX(),
-                robotPosition.getY() - targetPosition.getY());
-                        //+ time * swerve.getRobotRelativeSpeeds().vyMetersPerSecond);
-        if (isRed) {
-            angle = angle.plus(Rotation2d.fromDegrees(180));
-        }
-        System.out.println("length: " + length + " angle: " + angle);
         setSpeed(upspeed, downspeed);
         setPitch(pitch);
-        swerve.headTo(angle, true);
     }
 
     public void setSpeed(double upSpeed, double downSpeed) {

@@ -123,8 +123,8 @@ public final class Constants {
 
             /* Feedforward Constants */
             public static final double KS = 0.32; // TODO ROBOT SPECIFIC
-            public static final double KV = 1.51;
-            public static final double KA = 0.27;
+            public static final double KV = 0;
+            public static final double KA = 0;
         }
 
         public static final class SteerConstants {

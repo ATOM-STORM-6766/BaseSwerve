@@ -36,6 +36,8 @@ public class SwerveTab extends ShuffleboardTabBase {
 
     private GenericEntry m_odometryX;
     private GenericEntry m_odometryY;
+    
+    @SuppressWarnings("unused")
     private ComplexWidget m_odometryYaw;
 
     private GenericEntry m_driveP;

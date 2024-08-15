@@ -7,11 +7,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.auto.Autonomous;
 import frc.robot.auto.Autonomous.PPEvent;
 import frc.robot.auto.Routines;
-import frc.robot.commands.AutoShoot;
+import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeNote;
 import frc.robot.commands.ToAMP;
 import frc.robot.commands.ToShooter;
@@ -55,11 +54,11 @@ public class RobotContainer {
     private void configButtonBindings() {
         Controlboard.getZeroGyro().onTrue(new InstantCommand(() -> m_swerve.zeroGyro()));
 
-        Controlboard.intake().toggleOnTrue(new IntakeNote(m_intake).until(Controlboard.intakeFull()));
+        Controlboard.intake().toggleOnTrue(new IntakeNote(m_intake, m_led).until(Controlboard.intakeFull()));
 
         Controlboard.toShooter().whileTrue(new ToShooter(m_intake));
 
-        Controlboard.toggleFlywheel().whileTrue(new AutoShoot(m_shooter));
+        Controlboard.toggleFlywheel().whileTrue(new AutoAim(m_shooter));
 
         Controlboard.toElevatorAmp().onTrue(new ToAMP(m_intake, m_elevator));
 
@@ -97,11 +96,9 @@ public class RobotContainer {
     private void configAuto() {
         Autonomous.configure(
                 Commands.none().withName("Do Nothing"),
-                new PPEvent("ExampleEvent", new PrintCommand("This is an example event :)")),
-                new PPEvent("intake", new IntakeNote(m_intake).until(Controlboard.intakeFull())),
-                new PPEvent("aim", new AutoShoot(m_shooter)),
-                new PPEvent("shoot", new ToShooter(m_intake))
-                );
+                new PPEvent("intake", new IntakeNote(m_intake, m_led).until(Controlboard.intakeFull())),
+                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(1.5),
+                        Commands.waitSeconds(0.5).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
                 Routines.exampleAuto().withName("Example Auto"));

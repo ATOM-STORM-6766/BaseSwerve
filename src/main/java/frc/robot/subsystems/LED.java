@@ -24,14 +24,11 @@ public class LED extends SubsystemBase {
     private Timer m_timer = new Timer();
 
     public LED() {
-        m_ledBuffer = new AddressableLEDBuffer(60);
+        m_ledBuffer = new AddressableLEDBuffer(30);
         m_led.setLength(m_ledBuffer.getLength());
         m_led.start();
 
-        m_blackLedBuffer = new AddressableLEDBuffer(60);
-        m_blackLedBuffer.forEach((i, r, g, b) -> {
-            m_blackLedBuffer.setRGB(i, 0, 0, 0);
-        });
+        m_blackLedBuffer = new AddressableLEDBuffer(30);
     }
 
     public void isIntake() {
