@@ -101,7 +101,8 @@ public class RobotContainer {
                         Commands.waitSeconds(0.5).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
-                Routines.exampleAuto().withName("Example Auto"));
+                Routines.exampleAuto().withName("Example Auto"),
+                Routines.choreoAuto().withName("Choreo Auto"));
     }
 
     /**

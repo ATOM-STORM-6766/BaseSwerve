@@ -1,14 +1,26 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 1.377971887588501,
+      "y": 6.965842247009277
+    },
+    "rotation": 41.39056918737334
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "autoShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "shoot 0"
+            "pathName": "2shoot2take.1"
           }
         },
         {
@@ -20,24 +32,18 @@
         {
           "type": "path",
           "data": {
-            "pathName": "note 1"
+            "pathName": "2shoot2take.2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "autoShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "end"
           }
         }
       ]
     }
   },
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }
