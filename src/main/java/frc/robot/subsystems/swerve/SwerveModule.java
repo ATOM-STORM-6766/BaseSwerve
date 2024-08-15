@@ -49,8 +49,7 @@ public class SwerveModule {
     private StatusSignal<Double> m_steerVelocity;
     private SwerveModulePosition m_internalState = new SwerveModulePosition();
 
-    private SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(DriveConstants.KS, DriveConstants.KV,
-            DriveConstants.KA);
+    private SimpleMotorFeedforward m_feedforward = DriveConstants.FOWARD;
 
     private VoltageOut m_voltageOut = new VoltageOut(0).withEnableFOC(true);
 
@@ -165,7 +164,7 @@ public class SwerveModule {
             double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
                     SwerveConstants.MODULE_TYPE.wheelCircumference, 1);
             double feedforward = m_feedforward.calculate(desiredState.speedMetersPerSecond);
-            m_driveMotor.setControl(new VelocityTorqueCurrentFOC(velocity).withFeedForward(feedforward));
+            m_driveMotor.setControl(new VelocityTorqueCurrentFOC(velocity));// .withFeedForward(feedforward));
         }
     }
 

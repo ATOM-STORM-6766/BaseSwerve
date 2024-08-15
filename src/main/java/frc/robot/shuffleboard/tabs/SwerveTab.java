@@ -1,6 +1,7 @@
 
 package frc.robot.shuffleboard.tabs;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ComplexWidget;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -19,9 +20,9 @@ public class SwerveTab extends ShuffleboardTabBase {
     public SwerveTab(Swerve swerve) {
         m_swerve = swerve;
     }
-    
-    //Represents a set of entries for the Swerve subsystem.
-    //Each module has two entries: Encoder and integrated sensor readings.
+
+    // Represents a set of entries for the Swerve subsystem.
+    // Each module has two entries: Encoder and integrated sensor readings.
     private GenericEntry m_FLEncoder;
     private GenericEntry m_FLIntegrated;
 
@@ -36,16 +37,21 @@ public class SwerveTab extends ShuffleboardTabBase {
 
     private GenericEntry m_odometryX;
     private GenericEntry m_odometryY;
-    
+
     @SuppressWarnings("unused")
     private ComplexWidget m_odometryYaw;
 
     private GenericEntry m_driveP;
+    private GenericEntry m_driveS;
+    private GenericEntry m_driveV;
+    private GenericEntry m_driveA;
 
     /**
-     * This method creates number entries for various sensors related to the Swerve subsystem.
+     * This method creates number entries for various sensors related to the Swerve
+     * subsystem.
      * These entries are used to display and update values on the Shuffleboard.
-     * Set {@code ShuffleboardConstants.UPDATE_SWERVE} to true for entries that get values.
+     * Set {@code ShuffleboardConstants.UPDATE_SWERVE} to true for entries that get
+     * values.
      */
     @Override
     public void createEntries() {
@@ -68,13 +74,18 @@ public class SwerveTab extends ShuffleboardTabBase {
         m_odometryYaw = createSendableEntry("Odometry Angle", m_swerve.getGyro(), new EntryProperties(2, 2));
 
         if (ShuffleboardConstants.UPDATE_SWERVE) {
-            m_driveP = createNumberEntry("Drive P Gain", DriveConstants.PID_CONSTANTS.kP(), new EntryProperties(9, 0));
+            m_driveP = createNumberEntry("Drive P Gain", DriveConstants.PID_CONSTANTS.kP(), new EntryProperties(6, 0));
+            m_driveS = createNumberEntry("Drive S Gain", DriveConstants.FOWARD.ks, new EntryProperties(7, 0));
+            m_driveV = createNumberEntry("Drive V Gain", DriveConstants.FOWARD.kv, new EntryProperties(8, 0));
+            m_driveA = createNumberEntry("Drive A Gain", DriveConstants.FOWARD.ka, new EntryProperties(9, 0));
         }
     }
 
     /**
-     * Updates the values of various Shuffleboard widgets with the current state of the swerve drive.
-     * Set {@code ShuffleboardConstants.UPDATE_SWERVE} to true for entries that get values.
+     * Updates the values of various Shuffleboard widgets with the current state of
+     * the swerve drive.
+     * Set {@code ShuffleboardConstants.UPDATE_SWERVE} to true for entries that get
+     * values.
      */
     @Override
     public void periodic() {
@@ -95,6 +106,8 @@ public class SwerveTab extends ShuffleboardTabBase {
 
         if (ShuffleboardConstants.UPDATE_SWERVE) {
             m_swerve.configDrivePID(DriveConstants.PID_CONSTANTS.withP(m_driveP.get().getDouble()));
+            DriveConstants.FOWARD = new SimpleMotorFeedforward(m_driveS.get().getDouble(), m_driveV.get().getDouble(),
+                    m_driveA.get().getDouble());
         }
     }
 }
