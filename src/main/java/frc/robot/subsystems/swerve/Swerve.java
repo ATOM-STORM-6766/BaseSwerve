@@ -76,7 +76,7 @@ public class Swerve extends SubsystemBase {
          * It uses these values to estimate the robot's position on the field.
          */
         m_odometry = new SwerveDrivePoseEstimator(SwerveConstants.KINEMATICS, getYaw(), getModulePositions(),
-                new Pose2d());
+                new Pose2d(1.303138, 7.007566, new Rotation2d()));
         m_odometryThread = new OdometryThread(m_odometry, m_swerveModules, m_pigeon2, m_swerveModules.length);
         m_odometryThread.start();
 

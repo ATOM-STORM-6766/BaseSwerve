@@ -115,16 +115,16 @@ public final class Constants {
             public static final double CLOSED_LOOP_RAMP = 0.0;
 
             /* PID Constants */
-            public static final double KP = 0.12; // TODO ROBOT SPECIFIC
+            public static final double KP = 0.8; // TODO ROBOT SPECIFIC
             public static final double KI = 0.0;
             public static final double KD = 0.0;
             public static final double KF = 0.0;
             public static final ScreamPIDConstants PID_CONSTANTS = new ScreamPIDConstants(KP, KI, KD, KF);
 
             /* Feedforward Constants */
-            public static final double KS = 0.32; // TODO ROBOT SPECIFIC
-            public static final double KV = 0;
-            public static final double KA = 0;
+            public static final double KS = 0.8; // TODO ROBOT SPECIFIC
+            public static final double KV = 1.81;
+            public static final double KA = 0.5;
         }
 
         public static final class SteerConstants {

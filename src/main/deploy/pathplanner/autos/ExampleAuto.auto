@@ -8,25 +8,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot 0"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "note 1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShoot"
           }
         },
         {
