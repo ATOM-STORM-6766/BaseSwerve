@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.swerve.Swerve;
 
@@ -28,6 +29,7 @@ public class AutoAim extends Command {
     public void initialize() {
         isRed = RobotContainer.getAlliance() == Alliance.Red;
         targetPosition = isRed ? ShooterConstants.redTargetPosition : ShooterConstants.blueTargetPosition;
+        LED.getInstance().prepareToShoot();
     }
 
     @Override
@@ -48,11 +50,15 @@ public class AutoAim extends Command {
             angle = angle.plus(Rotation2d.fromDegrees(180));
         }
         System.out.println("length: " + length + " angle: " + angle);
+        if (setAngle(angle) < 0.05) {
+            LED.getInstance().readyToShoot();
+        }
         if (DriverStation.isAutonomous()) {
             m_swerve.setChassisSpeeds(
                     ChassisSpeeds.discretize(
                             0, 0, setAngle(angle),
-                            Constants.LOOP_TIME_SEC));
+                            Constants.LOOP_TIME_SEC),
+                    true);
             return;
         }
         m_swerve.headTo(angle, true);
@@ -66,7 +72,7 @@ public class AutoAim extends Command {
     @Override
     public void end(boolean interrupted) {
         m_shooter.stop();
-        m_shooter.holdPitch();
+        m_shooter.setPitch(0);
         m_swerve.headTo(null, false);
     }
 }

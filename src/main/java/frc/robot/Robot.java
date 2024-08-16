@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.commands.FollowPathCommand;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -41,6 +42,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
     // autonomous chooser on the dashboard.
+    FollowPathCommand.warmupCommand().schedule();
     robotContainer = new RobotContainer();
   }
 

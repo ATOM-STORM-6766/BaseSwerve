@@ -79,7 +79,8 @@ public class Shooter extends SubsystemBase {
         double upspeed = ShooterConstants.upperMap.get(length);
         double downspeed = ShooterConstants.lowerMap.get(length);
         double pitch = ShooterConstants.angleMap.get(length);
-        //double time = length / ((upspeed + downspeed) / 2 * ShooterConstants.flywheelCircumference);
+        // double time = length / ((upspeed + downspeed) / 2 *
+        // ShooterConstants.flywheelCircumference);
         setSpeed(upspeed, downspeed);
         setPitch(pitch);
     }

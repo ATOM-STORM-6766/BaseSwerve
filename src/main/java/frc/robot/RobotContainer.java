@@ -12,6 +12,7 @@ import frc.robot.auto.Autonomous.PPEvent;
 import frc.robot.auto.Routines;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeNote;
+import frc.robot.commands.ShootAim;
 import frc.robot.commands.ToAMP;
 import frc.robot.commands.ToShooter;
 import frc.robot.commands.swerve.TeleopSwerve;
@@ -27,11 +28,11 @@ import frc.robot.subsystems.swerve.Swerve;
 public class RobotContainer {
 
     /* Subsystems */
+    private static final LED m_led = LED.getInstance();
     private static final Swerve m_swerve = Swerve.getInstance();
     private static final Intake m_intake = new Intake();
     private static final Shooter m_shooter = Shooter.getInstance();
     private static final Elevator m_elevator = new Elevator();
-    private static final LED m_led = new LED();
 
     private static final ShuffleboardTabManager m_shuffleboardTabManager = new ShuffleboardTabManager();
 
@@ -46,6 +47,7 @@ public class RobotContainer {
         configButtonBindings();
         configDefaultCommands();
         configAuto();
+        m_led.setUp();
     }
 
     /**
@@ -82,6 +84,8 @@ public class RobotContainer {
                         Controlboard.getTranslation(),
                         Controlboard.getRotation(),
                         Controlboard.getFieldCentric()));
+
+        //m_shooter.setDefaultCommand(new ShootAim(m_shooter));
     }
 
     /**
@@ -97,7 +101,7 @@ public class RobotContainer {
         Autonomous.configure(
                 Commands.none().withName("Do Nothing"),
                 new PPEvent("intake", new IntakeNote(m_intake, m_led).until(Controlboard.intakeFull())),
-                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(2),
+                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(1.5),
                         Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(

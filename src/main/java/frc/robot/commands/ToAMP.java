@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Elevator.ElevatorState;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 
 public class ToAMP extends Command {
     private final Intake m_intake;
@@ -20,6 +21,7 @@ public class ToAMP extends Command {
     @Override
     public void initialize() {
         timer.restart();
+        LED.getInstance().isAMP();
     }
 
     @Override
@@ -39,12 +41,14 @@ public class ToAMP extends Command {
         if (m_elevator.state == ElevatorState.DOWN_FULL) {
             m_intake.stop();
             m_elevator.stopAMP();
+            LED.getInstance().AMPed();
         }
         if (m_elevator.state == ElevatorState.UP_FULL) {
             m_elevator.setAmp(0.35);
         }
         if (m_elevator.state == ElevatorState.UP_EMPTY) {
             m_elevator.stopAMP();
+            LED.getInstance().disabled();
         }
         m_elevator.updateState();
     }
