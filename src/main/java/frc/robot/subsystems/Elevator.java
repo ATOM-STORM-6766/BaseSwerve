@@ -22,8 +22,7 @@ public class Elevator extends SubsystemBase {
     private TalonFX m_elevatorMotor2;
     private TalonFX m_ampMotor;
     private PositionTorqueCurrentFOC m_positionControl = new PositionTorqueCurrentFOC(0);
-    private ElevatorState state = ElevatorState.DOWN_EMPTY;
-    private Timer timer = new Timer();
+    public ElevatorState state = ElevatorState.DOWN_EMPTY;
 
     public DigitalInput limitSwitch = new DigitalInput(1);
 
@@ -51,8 +50,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public void stopAMP() {
-        timer.stop();
-        timer.reset();
         m_ampMotor.setControl(new NeutralOut());
     }
 
@@ -61,33 +58,10 @@ public class Elevator extends SubsystemBase {
     }
 
     public void putAMP(Intake m_intake) {
-        if (state == ElevatorState.DOWN_EMPTY) {
-            timer.start();
-            if (timer.get() < 0.3) {
-                m_intake.setSpeed(0, 0.35, 0.35);
-            } else if (timer.get() < 0.6) {
-                m_intake.setSpeed(0.3, 0.35, 0.35);
-            } else if (timer.get() < 0.7) {
-                m_intake.setSpeed(0, -0.3, 0.35);
-            } else {
-                m_intake.setSpeed(0, 0.35, 0.35);
-            }
-            setAmp(0.35);
-        }
-        if (state == ElevatorState.DOWN_FULL) {
-            m_intake.stop();
-            stopAMP();
-        }
-        if (state == ElevatorState.UP_FULL) {
-            setAmp(0.35);
-        }
-        if (state == ElevatorState.UP_EMPTY) {
-            stopAMP();
-        }
-        updateState();
+
     }
 
-    private void updateState() {
+    public void updateState() {
         if (state == ElevatorState.DOWN_EMPTY && !limitSwitch.get()) {
             state = state.setFull();
         }
@@ -134,7 +108,7 @@ public class Elevator extends SubsystemBase {
         return config;
     }
 
-    private enum ElevatorState {
+    public enum ElevatorState {
         UP_EMPTY, DOWN_EMPTY, DOWN_FULL, UP_FULL;
 
         public ElevatorState setUp() {

@@ -63,8 +63,8 @@ public final class Constants {
         public static final boolean GYRO_INVERT = false; // Always ensure gyro reads CCW+ CW-
 
         /* Swerve Kinematics */
-        public static final double MAX_SPEED = 5.7349; // m/s
-        public static final double MAX_ANGULAR_VELOCITY = 8.0; // rad/s
+        public static final double MAX_SPEED = 4.601; // m/s
+        public static final double MAX_ANGULAR_VELOCITY = 8.950; // rad/s
 
         /* Swerve Kinematics */
         // No need to ever change this unless there are more than four modules.
@@ -109,7 +109,7 @@ public final class Constants {
             public static final int SUPPLY_CURRENT_THRESHOLD = 60;
             public static final double SUPPLY_TIME_THRESHOLD = 0.1;
             public static final boolean CURRENT_LIMIT_ENABLE = true;
-            public static final double SLIP_CURRENT = 400;
+            public static final double SLIP_CURRENT = 60;
 
             /* Ramps */
             public static final double OPEN_LOOP_RAMP = 0.25;

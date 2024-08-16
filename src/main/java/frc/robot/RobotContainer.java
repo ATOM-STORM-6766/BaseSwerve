@@ -97,8 +97,8 @@ public class RobotContainer {
         Autonomous.configure(
                 Commands.none().withName("Do Nothing"),
                 new PPEvent("intake", new IntakeNote(m_intake, m_led).until(Controlboard.intakeFull())),
-                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(1.5),
-                        Commands.waitSeconds(0.5).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
+                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(2),
+                        Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
                 Routines.exampleAuto().withName("Example Auto"),
