@@ -85,7 +85,7 @@ public class RobotContainer {
                         Controlboard.getRotation(),
                         Controlboard.getFieldCentric()));
 
-        //m_shooter.setDefaultCommand(new ShootAim(m_shooter));
+        // m_shooter.setDefaultCommand(new ShootAim(m_shooter));
     }
 
     /**
@@ -106,7 +106,9 @@ public class RobotContainer {
 
         Autonomous.addRoutines(
                 Routines.exampleAuto().withName("Example Auto"),
-                Routines.choreoAuto().withName("Choreo Auto"));
+                Routines.Point1().withName("Point1"),
+                Routines.Point2().withName("Point2"),
+                Routines.Point3().withName("Point3"));
     }
 
     /**

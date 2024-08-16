@@ -163,8 +163,7 @@ public class SwerveModule {
         } else {
             double velocity = Conversions.mpsToFalconRPS(desiredState.speedMetersPerSecond,
                     SwerveConstants.MODULE_TYPE.wheelCircumference, 1);
-            double feedforward = m_feedforward.calculate(desiredState.speedMetersPerSecond);
-            m_driveMotor.setControl(new VelocityTorqueCurrentFOC(velocity));// .withFeedForward(feedforward));
+            m_driveMotor.setControl(new VelocityTorqueCurrentFOC(velocity));
         }
     }
 

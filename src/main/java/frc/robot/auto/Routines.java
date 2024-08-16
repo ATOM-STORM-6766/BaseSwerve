@@ -15,7 +15,15 @@ public class Routines {
         return new PathPlannerAuto("ExampleAuto");
     }
 
-    public static Command choreoAuto() {
-        return new PathPlannerAuto("ChoreoAuto");
+    public static Command Point1() {
+        return new PathPlannerAuto("Point1");
+    }
+
+    public static Command Point2() {
+        return new PathPlannerAuto("Point2");
+    }
+
+    public static Command Point3() {
+        return new PathPlannerAuto("Point3");
     }
 }
