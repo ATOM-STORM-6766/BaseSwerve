@@ -343,6 +343,11 @@ public final class Constants {
         public static final int AMP_MOTOR_ID = 28;
     }
 
+    public static final class ClimbConstants {
+        public static final int CLIMB_MOTOR_1_ID = 29;
+        public static final int CLIMB_MOTOR_2_ID = 30;
+    }
+
     public static class Vision {
         public static final String kCameraName = "Arducam_OV9281_Right_Front";
         // Cam mounted facing forward, half a meter forward of center, half a meter up

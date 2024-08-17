@@ -18,6 +18,7 @@ import frc.robot.commands.ToShooter;
 import frc.robot.commands.swerve.TeleopSwerve;
 import frc.robot.controlboard.Controlboard;
 import frc.robot.shuffleboard.ShuffleboardTabManager;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
@@ -33,6 +34,7 @@ public class RobotContainer {
     private static final Intake m_intake = new Intake();
     private static final Shooter m_shooter = Shooter.getInstance();
     private static final Elevator m_elevator = new Elevator();
+    private static final Climb m_climb = new Climb();
 
     private static final ShuffleboardTabManager m_shuffleboardTabManager = new ShuffleboardTabManager();
 
@@ -86,6 +88,7 @@ public class RobotContainer {
                         Controlboard.getFieldCentric()));
 
         // m_shooter.setDefaultCommand(new ShootAim(m_shooter));
+        m_climb.setDefaultCommand(m_climb.setSpeed(Controlboard.getClimbSpeed()));
     }
 
     /**
@@ -105,7 +108,6 @@ public class RobotContainer {
                         Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
-                Routines.exampleAuto().withName("Example Auto"),
                 Routines.Point1().withName("Point1"),
                 Routines.Point2().withName("Point2"),
                 Routines.Point3().withName("Point3"));

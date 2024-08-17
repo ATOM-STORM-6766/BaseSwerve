@@ -106,4 +106,8 @@ public class Controlboard {
     public static BooleanSupplier intakeFull() {
         return () -> !intakelimitSwitch.get();
     }
+
+    public static DoubleSupplier getClimbSpeed() {
+        return () -> -MathUtil.applyDeadband(operatorController.getLeftY(), 0.1);
+    }
 }
