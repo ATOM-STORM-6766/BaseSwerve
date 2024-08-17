@@ -91,6 +91,10 @@ public class Controlboard {
         return driverController.a();
     }
 
+    public static Trigger shootTransport() {
+        return driverController.leftBumper();
+    }
+
     public static Trigger toElevatorAmp() {
         return operatorController.y();
     }
@@ -105,6 +109,10 @@ public class Controlboard {
 
     public static BooleanSupplier intakeFull() {
         return () -> !intakelimitSwitch.get();
+    }
+
+    public static Trigger toggleClimb() {
+        return operatorController.leftTrigger();
     }
 
     public static DoubleSupplier getClimbSpeed() {

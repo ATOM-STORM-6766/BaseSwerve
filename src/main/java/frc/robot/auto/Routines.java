@@ -11,9 +11,6 @@ public class Routines {
      * 
      * @return A full autonomous command.
      */
-    public static Command exampleAuto() {
-        return new PathPlannerAuto("ExampleAuto");
-    }
 
     public static Command Point1() {
         return new PathPlannerAuto("Point1");
@@ -25,5 +22,17 @@ public class Routines {
 
     public static Command Point3() {
         return new PathPlannerAuto("Point3");
+    }
+
+    public static Command Point1Shoot3() {
+        return new PathPlannerAuto("Point1Shoot3");
+    }
+
+    public static Command Point2Shoot3() {
+        return new PathPlannerAuto("Point2Shoot3");
+    }
+
+    public static Command Point3Shoot3() {
+        return new PathPlannerAuto("Point3Shoot3");
     }
 }

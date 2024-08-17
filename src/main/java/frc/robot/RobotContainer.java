@@ -12,7 +12,7 @@ import frc.robot.auto.Autonomous.PPEvent;
 import frc.robot.auto.Routines;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.IntakeNote;
-import frc.robot.commands.ShootAim;
+import frc.robot.commands.ShootTransport;
 import frc.robot.commands.ToAMP;
 import frc.robot.commands.ToShooter;
 import frc.robot.commands.swerve.TeleopSwerve;
@@ -76,6 +76,10 @@ public class RobotContainer {
         }, m_intake));
 
         Controlboard.resetElevator().onTrue(Commands.runOnce(() -> m_elevator.resetState(), m_elevator));
+
+        Controlboard.toggleClimb().whileTrue(m_climb.setSpeed(Controlboard.getClimbSpeed()));
+
+        Controlboard.shootTransport().whileTrue(new ShootTransport(m_shooter));
     }
 
     private void configDefaultCommands() {
@@ -88,7 +92,6 @@ public class RobotContainer {
                         Controlboard.getFieldCentric()));
 
         // m_shooter.setDefaultCommand(new ShootAim(m_shooter));
-        m_climb.setDefaultCommand(m_climb.setSpeed(Controlboard.getClimbSpeed()));
     }
 
     /**
@@ -108,9 +111,13 @@ public class RobotContainer {
                         Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
+            
                 Routines.Point1().withName("Point1"),
                 Routines.Point2().withName("Point2"),
-                Routines.Point3().withName("Point3"));
+                Routines.Point3().withName("Point3"),
+                Routines.Point1Shoot3().withName("Point1Shoot3"),
+                Routines.Point2Shoot3().withName("Point2Shoot3"),
+                Routines.Point3Shoot3().withName("Point3Shoot3"));
     }
 
     /**

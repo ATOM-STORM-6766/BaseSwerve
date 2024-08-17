@@ -4,7 +4,8 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -29,8 +30,9 @@ public class Climb extends SubsystemBase {
     }
 
     public Command setSpeed(DoubleSupplier speed) {
-        return this.runOnce(() -> m_climbMotor1.setControl(new VelocityTorqueCurrentFOC(speed.getAsDouble() * 35)));
-    }
+        return this.runEnd(() -> m_climbMotor1.setControl(new VoltageOut(speed.getAsDouble() * 12)),
+                () -> m_climbMotor1.setControl(new PositionTorqueCurrentFOC(m_climbMotor1.getPosition().getValue())));
+    };
 
     private void configMotors() {
         var config = FXConfig(InvertedValue.CounterClockwise_Positive, NeutralModeValue.Brake);

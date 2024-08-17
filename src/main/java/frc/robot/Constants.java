@@ -116,14 +116,14 @@ public final class Constants {
             public static final double CLOSED_LOOP_RAMP = 0.0;
 
             /* PID Constants */
-            public static final double KP = 2.0; // TODO ROBOT SPECIFIC
+            public static final double KP = 2.0;
             public static final double KI = 0.0;
             public static final double KD = 0.5;
             public static final double KF = 0.0;
             public static final ScreamPIDConstants PID_CONSTANTS = new ScreamPIDConstants(KP, KI, KD, KF);
 
             /* Feedforward Constants */
-            public static final double KS = 1.0; // TODO ROBOT SPECIFIC
+            public static final double KS = 1.0;
             public static final double KV = 0.0;
             public static final double KA = 0.0;
             public static SimpleMotorFeedforward FOWARD = new SimpleMotorFeedforward(DriveConstants.KS,
@@ -224,6 +224,9 @@ public final class Constants {
 
         public static final Translation2d redTargetPosition = new Translation2d(16.54175, 5.547868);// 红方低音炮底部，正对4号标签
         public static final Translation2d blueTargetPosition = new Translation2d(0.0, 5.547868);// 蓝方低音炮底部，正对7号标签
+
+        public static final Translation2d redTransportPosition = new Translation2d(14.512477, 6.5);
+        public static final Translation2d blueTransportPosition = new Translation2d(2.0, 6.5);
 
         public static InterpolatingDoubleTreeMap upperMap = new InterpolatingDoubleTreeMap();
         public static InterpolatingDoubleTreeMap lowerMap = new InterpolatingDoubleTreeMap();

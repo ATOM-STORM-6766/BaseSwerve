@@ -9,7 +9,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -21,7 +20,6 @@ import frc.lib.pid.ScreamPIDConstants;
 import frc.robot.Constants;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.SwerveConstants;
-import frc.robot.Constants.SwerveConstants.DriveConstants;
 import frc.robot.Constants.SwerveConstants.ModuleConstants.ModuleLocation;
 import frc.robot.Constants.SwerveConstants.ModuleConstants.SwerveModuleConstants;
 
@@ -48,8 +46,6 @@ public class SwerveModule {
     private StatusSignal<Double> m_steerPosition;
     private StatusSignal<Double> m_steerVelocity;
     private SwerveModulePosition m_internalState = new SwerveModulePosition();
-
-    private SimpleMotorFeedforward m_feedforward = DriveConstants.FOWARD;
 
     private VoltageOut m_voltageOut = new VoltageOut(0).withEnableFOC(true);
 
