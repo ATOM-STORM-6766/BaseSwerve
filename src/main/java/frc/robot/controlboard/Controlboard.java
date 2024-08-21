@@ -112,7 +112,7 @@ public class Controlboard {
     }
 
     public static Trigger toggleClimb() {
-        return operatorController.leftTrigger();
+        return new Trigger(() -> Math.abs(getClimbSpeed().getAsDouble()) > 0.1);
     }
 
     public static DoubleSupplier getClimbSpeed() {

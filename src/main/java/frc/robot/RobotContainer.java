@@ -38,14 +38,14 @@ public class RobotContainer {
 
     private static final ShuffleboardTabManager m_shuffleboardTabManager = new ShuffleboardTabManager();
 
-    private static final Optional<Alliance> m_alliance = DriverStation.getAlliance();
+    public static Optional<Alliance> m_alliance = DriverStation.getAlliance();
 
     /**
      * Configures the basic robot systems, such as Shuffleboard, autonomous, default
      * commands, and button bindings.
      */
     public RobotContainer() {
-        m_shuffleboardTabManager.addTabs(true);
+        m_shuffleboardTabManager.addTabs(false);
         configButtonBindings();
         configDefaultCommands();
         configAuto();
@@ -62,7 +62,7 @@ public class RobotContainer {
 
         Controlboard.toShooter().whileTrue(new ToShooter(m_intake));
 
-        Controlboard.toggleFlywheel().whileTrue(new AutoAim(m_shooter));
+        Controlboard.toggleFlywheel().whileTrue(new AutoAim(m_shooter, Controlboard.getFieldCentric()));
 
         Controlboard.toElevatorAmp().onTrue(new ToAMP(m_intake, m_elevator));
 
@@ -107,11 +107,12 @@ public class RobotContainer {
         Autonomous.configure(
                 Commands.none().withName("Do Nothing"),
                 new PPEvent("intake", new IntakeNote(m_intake, m_led).until(Controlboard.intakeFull())),
-                new PPEvent("autoShoot", Commands.parallel(new AutoAim(m_shooter).withTimeout(1.5),
-                        Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
+                new PPEvent("autoShoot",
+                        Commands.parallel(new AutoAim(m_shooter, Controlboard.getFieldCentric()).withTimeout(1.5),
+                                Commands.waitSeconds(1).andThen(new ToShooter(m_intake).withTimeout(0.5)))));
 
         Autonomous.addRoutines(
-            
+
                 Routines.Point1().withName("Point1"),
                 Routines.Point2().withName("Point2"),
                 Routines.Point3().withName("Point3"),

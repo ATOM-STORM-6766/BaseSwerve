@@ -83,11 +83,21 @@ public class LED extends SubsystemBase {
         }
     }
 
+    // public void outShootingRange() {
+    // for (int i = 20; i < 30; i++) {
+    // m_ledBuffer.setRGB(i, 0, 0, 0);
+    // m_blackLedBuffer.setRGB(i, 0, 0, 0);
+    // }
+    // }
+
     public void outShootingRange() {
-        for (int i = 20; i < 30; i++) {
-            m_ledBuffer.setRGB(i, 0, 0, 0);
-            m_blackLedBuffer.setRGB(i, 0, 0, 0);
-        }
+        m_ledBufferQueue.clear();
+        m_ledBuffer.forEach((index, r, g, b) -> {
+            if (index < 20)
+                m_ledBuffer.setRGB(index, 200, 0, 0);
+        });
+        m_ledBufferQueue.add(m_ledBuffer);
+        m_ledBufferQueue.add(m_blackLedBuffer);
     }
 
     public void prepareToShoot() {

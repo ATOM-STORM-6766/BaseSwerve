@@ -11,8 +11,6 @@ import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.StaticBrake;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.config.DeviceConfig;
 import frc.robot.Constants;
@@ -29,37 +27,13 @@ public class Shooter extends SubsystemBase {
     public static double downSpeed = 0;
     public static double m_pitch = 0;
 
-    private double corr_pith = 0;
-
     private VelocityVoltage m_Control = new VelocityVoltage(0);// .withEnableFOC(true);
-    private boolean isReady = false;
-    private Timer m_timer = new Timer();
 
     public static Shooter getInstance() {
         if (instance == null) {
             instance = new Shooter();
         }
         return instance;
-    }
-
-    @Override
-    public void periodic() {
-        if (!isReady && DriverStation.isEnabled()) {
-            down(0.5);
-            m_timer.start();
-            System.out.println(m_timer.get());
-            if (corr_pith > m_pitchMotor.getPosition().getValue() && m_timer.get() > 0.4) {
-                corr_pith = m_pitchMotor.getPosition().getValue();
-                m_timer.restart();
-            } else if (m_timer.get() > 1) {
-                System.out.println("isReady");
-                m_pitchMotor.setPosition(0);
-                holdPitch();
-                isReady = true;
-                m_timer.stop();
-                m_timer.reset();
-            }
-        }
     }
 
     public Shooter() {

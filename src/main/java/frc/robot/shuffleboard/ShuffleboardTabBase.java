@@ -41,6 +41,7 @@ public abstract class ShuffleboardTabBase {
             entry = entry.withProperties(widget.propertyMap());
         }
         
+        
         return entry.getEntry();
     }
 

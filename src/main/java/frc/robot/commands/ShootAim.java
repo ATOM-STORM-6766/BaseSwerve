@@ -31,11 +31,10 @@ public class ShootAim extends Command {
     public void execute() {
         var robotPosition = m_swerve.getPose().getTranslation();
         double length = robotPosition.getDistance(targetPosition);
-        if (length > 3.6) {
-            if (!isOut) {
-                LED.getInstance().disabled();
-                isOut = true;
-            }
+
+        if (length > 3.6 && !isOut) {
+            LED.getInstance().disabled();
+            isOut = true;
             return;
         }
         if (isOut) {

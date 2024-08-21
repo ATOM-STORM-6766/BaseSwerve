@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,9 +21,11 @@ public class AutoAim extends Command {
     private final Swerve m_swerve = Swerve.getInstance();
     private Translation2d targetPosition;
     private boolean isRed;
+    private BooleanSupplier fieldRelativeSup;
 
-    public AutoAim(Shooter shooter) {
+    public AutoAim(Shooter shooter, BooleanSupplier fieldRelativeSup) {
         this.m_shooter = shooter;
+        this.fieldRelativeSup = fieldRelativeSup;
         addRequirements(m_shooter);
     }
 
@@ -34,12 +38,17 @@ public class AutoAim extends Command {
 
     @Override
     public void execute() {
+        if (!fieldRelativeSup.getAsBoolean()) {
+            m_shooter.autoRun(1.35);
+            return;
+        }
         var robotPosition = m_swerve.getPose().getTranslation();
         double length = robotPosition.getDistance(targetPosition);
         if (length > 3.6) {
             m_shooter.stop();
             m_shooter.holdPitch();
             m_swerve.headTo(null, false);
+            LED.getInstance().outShootingRange();
             return;
         }
         m_shooter.autoRun(length);
@@ -49,7 +58,6 @@ public class AutoAim extends Command {
         if (isRed) {
             angle = angle.plus(Rotation2d.fromDegrees(180));
         }
-        System.out.println("length: " + length + " angle: " + angle);
         if (setAngle(angle) < 0.05) {
             LED.getInstance().readyToShoot();
         }

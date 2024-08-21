@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.commands.FollowPathCommand;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +26,7 @@ public class Robot extends TimedRobot {
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private boolean isReady = false;
 
   private Timer coastTimer = new Timer();
 
@@ -67,6 +69,12 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    if (!isReady && !RobotContainer.m_alliance.isPresent()) {
+      RobotContainer.m_alliance = DriverStation.getAlliance();
+      isReady = true;
+    }
+
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,12 +25,19 @@ public class Climb extends SubsystemBase {
         m_climbMotor2 = new TalonFX(ClimbConstants.CLIMB_MOTOR_2_ID);
         configMotors();
         m_climbMotor1.setPosition(0);
-        m_climbMotor2.setControl(new Follower(m_climbMotor1.getDeviceID(), true));
+        m_climbMotor2.setPosition(0);
     }
 
     public Command setSpeed(DoubleSupplier speed) {
-        return this.runEnd(() -> m_climbMotor1.setControl(new VoltageOut(speed.getAsDouble() * 12)),
-                () -> m_climbMotor1.setControl(new PositionTorqueCurrentFOC(m_climbMotor1.getPosition().getValue())));
+        return this.runEnd(() -> {
+            var control = new VoltageOut(speed.getAsDouble() * 4);
+            m_climbMotor1.setControl(control);
+            m_climbMotor2.setControl(control);
+        },
+                () -> {
+                    m_climbMotor1.setControl(new PositionTorqueCurrentFOC(m_climbMotor1.getPosition().getValue()));
+                    m_climbMotor2.setControl(new PositionTorqueCurrentFOC(m_climbMotor2.getPosition().getValue()));
+                });
     };
 
     private void configMotors() {
@@ -41,6 +47,7 @@ public class Climb extends SubsystemBase {
         config.TorqueCurrent.PeakReverseTorqueCurrent = -30;
         DeviceConfig.configureTalonFX("Climb Motor 1", m_climbMotor1,
                 config, Constants.LOOP_TIME_HZ);
+        config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         DeviceConfig.configureTalonFX("Climb Motor 2", m_climbMotor2,
                 config, Constants.LOOP_TIME_HZ);
     }
