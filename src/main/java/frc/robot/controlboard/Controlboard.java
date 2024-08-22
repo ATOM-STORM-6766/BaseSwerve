@@ -44,7 +44,7 @@ public class Controlboard {
      * @return A DoubleSupplier representing the rotation.
      */
     public static DoubleSupplier getRotation() {
-        return () -> -MathUtil.applyDeadband(Math.pow(driverController.getRightX(), 3), STICK_DEADBAND);
+        return () -> -MathUtil.applyDeadband(driverController.getRightX(), STICK_DEADBAND);
     }
 
     /**

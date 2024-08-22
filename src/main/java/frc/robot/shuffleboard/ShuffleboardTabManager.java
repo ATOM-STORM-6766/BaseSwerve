@@ -14,14 +14,17 @@ public class ShuffleboardTabManager extends SubsystemBase {
 
     private static final ArrayList<ShuffleboardTabBase> m_tabs = new ArrayList<ShuffleboardTabBase>();
 
-    public ShuffleboardTabManager(){}
+    public ShuffleboardTabManager() {
+    }
 
     /**
-     * Adds predefined tabs to Shuffleboard.<p>
+     * Adds predefined tabs to Shuffleboard.
+     * <p>
+     * 
      * @param includeDebug Whether to include additional debug tabs.
      */
-    public void addTabs(boolean includeDebug){
-        m_tabs.add(new MatchTab());
+    public void addTabs(boolean includeDebug) {
+        m_tabs.add(new MatchTab(RobotContainer.m_alliance));
         if (includeDebug) {
             m_tabs.add(new SwerveTab(RobotContainer.getSwerve()));
         }
