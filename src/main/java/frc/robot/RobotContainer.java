@@ -151,7 +151,7 @@ public class RobotContainer {
             return m_alliance.get();
         } else {
             DriverStation.reportError("[ERROR] Could not retrieve Alliance", true);
-            return Alliance.Blue;
+            return Alliance.Red;
         }
     }
 }
