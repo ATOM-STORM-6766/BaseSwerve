@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "autoShoot"
@@ -39,6 +33,18 @@
           "type": "path",
           "data": {
             "pathName": "Point3.2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "autoShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Point3.3"
           }
         }
       ]

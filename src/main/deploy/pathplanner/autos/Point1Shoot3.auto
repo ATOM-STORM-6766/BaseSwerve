@@ -14,7 +14,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.0
           }
         },
         {
@@ -39,18 +39,6 @@
           "type": "path",
           "data": {
             "pathName": "Point1Shoot3.2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "autoShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Point1Shoot3.3"
           }
         },
         {
